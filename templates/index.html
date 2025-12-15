@@ -10,6 +10,7 @@
     <div class="container">
         <header>
             <h1>ポモドーロタイマー</h1>
+            <button id="settings-btn" class="btn-settings" aria-label="設定を開く">⚙️</button>
         </header>
         
         <main>
@@ -63,9 +64,97 @@
         </main>
     </div>
     
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal" role="dialog" aria-labelledby="settings-title" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="settings-title">設定</h2>
+                <button id="close-settings-btn" class="btn-close" aria-label="閉じる">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Time Settings -->
+                <div class="settings-group">
+                    <h3>時間設定</h3>
+                    
+                    <div class="setting-item">
+                        <label for="work-duration">作業時間</label>
+                        <select id="work-duration" class="select-input">
+                            <option value="15">15分</option>
+                            <option value="25" selected>25分</option>
+                            <option value="35">35分</option>
+                            <option value="45">45分</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="break-duration">休憩時間</label>
+                        <select id="break-duration" class="select-input">
+                            <option value="5" selected>5分</option>
+                            <option value="10">10分</option>
+                            <option value="15">15分</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Theme Settings -->
+                <div class="settings-group">
+                    <h3>テーマ</h3>
+                    
+                    <div class="setting-item radio-group">
+                        <label>
+                            <input type="radio" name="theme" value="light" checked>
+                            <span class="radio-label">ライト</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="theme" value="dark">
+                            <span class="radio-label">ダーク</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="theme" value="focus">
+                            <span class="radio-label">フォーカス</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Sound Settings -->
+                <div class="settings-group">
+                    <h3>サウンド設定</h3>
+                    
+                    <div class="setting-item">
+                        <label for="sound-start">
+                            <input type="checkbox" id="sound-start" checked>
+                            開始音
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="sound-end">
+                            <input type="checkbox" id="sound-end" checked>
+                            終了音
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="sound-tick">
+                            <input type="checkbox" id="sound-tick">
+                            tick音
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="cancel-settings-btn" class="btn-cancel">キャンセル</button>
+                <button id="save-settings-btn" class="btn-save">保存</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api-client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/settings-manager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ui-controller.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
