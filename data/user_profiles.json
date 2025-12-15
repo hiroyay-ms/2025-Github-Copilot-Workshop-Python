@@ -1,0 +1,12 @@
+{
+  "default": {
+    "user_id": "default",
+    "level": 1,
+    "experience_points": 10,
+    "badges": [],
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_activity_date": "2025-12-15",
+    "created_at": "2025-12-15T04:40:16.669974"
+  }
+}

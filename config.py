@@ -26,6 +26,7 @@ class Config:
     # データファイル設定
     DATA_DIR = BASE_DIR / 'data'
     DATA_FILE = DATA_DIR / 'sessions.json'
+    USER_PROFILE_FILE = DATA_DIR / 'user_profiles.json'
     
     # CORS設定
     CORS_ORIGINS = ['http://localhost:5000']
@@ -50,6 +51,7 @@ class TestConfig(Config):
     
     # テスト用インメモリデータ
     DATA_FILE = ':memory:'
+    USER_PROFILE_FILE = ':memory:'
 
 
 class ProductionConfig(Config):

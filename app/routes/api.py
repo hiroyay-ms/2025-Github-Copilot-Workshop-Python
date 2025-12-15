@@ -5,7 +5,9 @@ from config import Config
 
 from app.services.timer_service import TimerService
 from app.services.stats_service import StatsService
+from app.services.gamification_service import GamificationService
 from app.repositories.session_repository import JSONSessionRepository
+from app.repositories.user_profile_repository import UserProfileRepository
 
 # Create blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -19,6 +21,16 @@ timer_service = TimerService(
     break_duration=Config.SHORT_BREAK_DURATION
 )
 stats_service = StatsService(repository=repository)
+
+# Gamification services
+profile_repository = UserProfileRepository(str(Config.USER_PROFILE_FILE))
+gamification_service = GamificationService(
+    profile_repository=profile_repository,
+    session_repository=repository
+)
+
+# Default user ID for single-user application
+DEFAULT_USER_ID = 'default'
 
 
 @api_bp.route('/session/start', methods=['POST'])
@@ -83,7 +95,16 @@ def complete_session():
             "start_time": "2025-12-15T10:00:00",
             "end_time": "2025-12-15T10:25:00",
             "duration_minutes": 25,
-            "completed": true
+            "completed": true,
+            "gamification": {
+                "xp_earned": 10,
+                "total_xp": 110,
+                "level": 2,
+                "level_up": true,
+                "current_streak": 5,
+                "streak_continued": true,
+                "newly_earned_badges": [...]
+            }
         }
     """
     try:
@@ -100,13 +121,20 @@ def complete_session():
         # Complete the session
         session = timer_service.complete_session(session_id)
         
+        # Process gamification for completed session
+        gamification_result = gamification_service.process_session_completion(
+            user_id=DEFAULT_USER_ID,
+            session_type=session.session_type
+        )
+        
         return jsonify({
             'id': session.id,
             'session_type': session.session_type,
             'start_time': session.start_time.isoformat(),
             'end_time': session.end_time.isoformat() if session.end_time else None,
             'duration_minutes': session.duration_minutes,
-            'completed': session.completed
+            'completed': session.completed,
+            'gamification': gamification_result
         }), 200
         
     except ValueError as e:

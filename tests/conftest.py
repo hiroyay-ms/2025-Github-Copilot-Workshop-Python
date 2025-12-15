@@ -42,6 +42,11 @@ def client(app):
     if data_file.exists():
         data_file.write_text("[]")
     
+    # ユーザープロファイルファイルをクリア
+    profile_file = Path(Config.USER_PROFILE_FILE)
+    if profile_file.exists():
+        profile_file.write_text("{}")
+    
     return app.test_client()
 
 
