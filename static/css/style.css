@@ -1,0 +1,659 @@
+/* ========================================
+   リセットとベーススタイル
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 
+                 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   カラー変数
+   ======================================== */
+
+:root {
+    --primary-color: #5B68E8;
+    --primary-dark: #4a56d1;
+    --primary-light: #7b87f0;
+    --success-color: #4CAF50;
+    --success-dark: #45a049;
+    --danger-color: #f44336;
+    --warning-color: #ff9800;
+    --info-color: #2196F3;
+    --text-dark: #2c3e50;
+    --text-medium: #34495e;
+    --text-light: #7f8c8d;
+    --bg-white: #ffffff;
+    --bg-light: #f8f9fa;
+    --bg-gray: #e9ecef;
+    --border-color: #dee2e6;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 15px 50px rgba(0, 0, 0, 0.2);
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+    --border-radius-full: 50px;
+}
+
+/* ========================================
+   コンテナとレイアウト
+   ======================================== */
+
+.container {
+    max-width: 520px;
+    width: 100%;
+    background: var(--bg-white);
+    border-radius: var(--border-radius-lg);
+    padding: 48px;
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+    animation: fadeIn 0.5s ease;
+}
+
+.container:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   ヘッダー
+   ======================================== */
+
+header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+/* ========================================
+   タイマーセクション
+   ======================================== */
+
+.timer-section {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.status-text {
+    font-size: 18px;
+    color: var(--text-light);
+    margin-bottom: 36px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color var(--transition-normal);
+}
+
+.status-text.working {
+    color: var(--primary-color);
+}
+
+.status-text.resting {
+    color: var(--success-color);
+}
+
+.status-text.stopped {
+    color: var(--text-light);
+}
+
+.timer-display {
+    margin: 48px 0;
+    position: relative;
+    display: inline-block;
+}
+
+/* 円形プログレスバー */
+.progress-ring {
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 4px 12px rgba(91, 104, 232, 0.2));
+    transition: filter var(--transition-normal);
+}
+
+.timer-display:hover .progress-ring {
+    filter: drop-shadow(0 6px 16px rgba(91, 104, 232, 0.3));
+}
+
+.progress-ring__background {
+    opacity: 0.15;
+    stroke: var(--border-color);
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+    transform-origin: center;
+    stroke-linecap: round;
+}
+
+.progress-ring__circle.work {
+    stroke: var(--primary-color);
+}
+
+.progress-ring__circle.break {
+    stroke: var(--success-color);
+}
+
+.time {
+    font-size: 72px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 2px;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+}
+
+/* ========================================
+   ボタン
+   ======================================== */
+
+.controls {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 36px;
+}
+
+button {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 36px;
+    border: none;
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: inherit;
+    text-transform: none;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+button:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-start {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(91, 104, 232, 0.3);
+    min-width: 120px;
+}
+
+.btn-start:hover:not(:disabled) {
+    background: var(--primary-dark);
+    box-shadow: 0 6px 20px rgba(91, 104, 232, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-start:focus {
+    box-shadow: 0 0 0 3px rgba(91, 104, 232, 0.3), 0 6px 20px rgba(91, 104, 232, 0.4);
+}
+
+.btn-start:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-start:disabled {
+    background: var(--bg-gray);
+    color: var(--text-light);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.6;
+}
+
+.btn-start.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-start.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-reset {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    min-width: 120px;
+}
+
+.btn-reset:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(91, 104, 232, 0.3);
+}
+
+.btn-reset:focus {
+    box-shadow: 0 0 0 3px rgba(91, 104, 232, 0.2);
+}
+
+.btn-reset:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   統計セクション
+   ======================================== */
+
+.stats-section {
+    background: var(--bg-light);
+    border-radius: var(--border-radius-md);
+    padding: 32px;
+    margin-top: 36px;
+    transition: background var(--transition-normal);
+}
+
+.stats-section:hover {
+    background: var(--bg-gray);
+}
+
+.stats-section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 24px;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 16px;
+    border-radius: var(--border-radius-sm);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.stat-item:hover {
+    background: var(--bg-white);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    display: block;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+    transition: color var(--transition-normal);
+}
+
+.stat-item:hover .stat-value {
+    color: var(--primary-dark);
+}
+
+.stat-label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-light);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================
+   トーストメッセージ
+   ======================================== */
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    padding: 16px 24px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    max-width: 400px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.toast.hide {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.toast.warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.toast.info {
+    border-left: 4px solid var(--info-color);
+}
+
+.toast-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 4px;
+    min-width: auto;
+    transition: color var(--transition-fast);
+}
+
+.toast-close:hover {
+    color: var(--text-dark);
+    transform: none;
+}
+
+/* ========================================
+   ローディングオーバーレイ
+   ======================================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    animation: fadeIn 0.2s ease;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spinner 0.8s linear infinite;
+}
+
+/* ========================================
+   レスポンシブデザイン
+   ======================================== */
+
+/* タブレット */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+    
+    .container {
+        padding: 36px 24px;
+    }
+    
+    h1 {
+        font-size: 28px;
+    }
+}
+
+/* スマートフォン（横向き・大） */
+@media (max-width: 600px) {
+    .container {
+        padding: 32px 20px;
+        border-radius: var(--border-radius-md);
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    .timer-display {
+        margin: 36px 0;
+    }
+    
+    .progress-ring {
+        width: 260px;
+        height: 260px;
+    }
+    
+    .progress-ring circle {
+        r: 120;
+        cx: 130;
+        cy: 130;
+    }
+    
+    .time {
+        font-size: 56px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    button {
+        width: 100%;
+        padding: 14px 28px;
+    }
+    
+    .stats {
+        gap: 16px;
+    }
+    
+    .stat-value {
+        font-size: 32px;
+    }
+    
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        min-width: auto;
+    }
+}
+
+/* スマートフォン（小） */
+@media (max-width: 400px) {
+    body {
+        padding: 12px;
+    }
+    
+    .container {
+        padding: 24px 16px;
+    }
+    
+    h1 {
+        font-size: 22px;
+    }
+    
+    .status-text {
+        font-size: 16px;
+    }
+    
+    .timer-display {
+        margin: 28px 0;
+    }
+    
+    .progress-ring {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .progress-ring circle {
+        r: 100;
+        cx: 110;
+        cy: 110;
+    }
+    
+    .time {
+        font-size: 48px;
+    }
+    
+    button {
+        font-size: 15px;
+        padding: 12px 24px;
+    }
+    
+    .stats-section {
+        padding: 24px 16px;
+    }
+    
+    .stat-value {
+        font-size: 28px;
+    }
+    
+    .stat-label {
+        font-size: 13px;
+    }
+}
+
+/* ダークモード対応（オプション） */
+@media (prefers-color-scheme: dark) {
+    /* 将来的な拡張のための準備 */
+}
+
+/* アクセシビリティ: モーションを減らす設定 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 印刷用スタイル */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .container {
+        box-shadow: none;
+    }
+    
+    button {
+        display: none;
+    }
+}
+
+/* タッチデバイス用の調整 */
+@media (hover: none) and (pointer: coarse) {
+    button {
+        padding: 16px 36px;
+        min-height: 48px;
+    }
+    
+    .btn-start:hover,
+    .btn-reset:hover,
+    .stat-item:hover {
+        transform: none;
+    }
+}

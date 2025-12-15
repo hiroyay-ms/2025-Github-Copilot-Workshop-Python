@@ -1,0 +1,9 @@
+# Placeholder for notification sound file
+# 
+# In a real implementation, this would be an actual MP3 audio file.
+# For testing purposes, you can:
+# 1. Download a free notification sound from sites like freesound.org
+# 2. Use an online tone generator to create a simple beep sound
+# 3. Convert any audio file to MP3 format
+#
+# Recommended: Short (1-2 seconds), pleasant notification sound

@@ -1,0 +1,24 @@
+# ポモドーロタイマーアプリケーション - 開発・テスト依存関係
+# Python 3.8以上
+
+# 本番依存関係を含める
+-r requirements.txt
+
+# テストフレームワーク
+pytest==7.4.0
+pytest-cov==4.1.0
+pytest-mock==3.11.1
+
+# 時刻モック
+freezegun==1.2.2
+
+# テストデータ生成
+factory-boy==3.3.0
+
+# コードフォーマット・Lint
+black==23.7.0
+flake8==6.1.0
+mypy==1.5.1
+
+# 開発用ツール
+ipython==8.14.0

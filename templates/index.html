@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポモドーロタイマー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ポモドーロタイマー</h1>
+        </header>
+        
+        <main>
+            <div class="timer-section">
+                <p id="status-text" class="status-text">停止中</p>
+                
+                <div class="timer-display">
+                    <!-- 円形プログレスバー -->
+                    <svg class="progress-ring" width="300" height="300">
+                        <circle class="progress-ring__background"
+                                stroke="#e0e0e0"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="140"
+                                cx="150"
+                                cy="150"/>
+                        <circle id="progress-ring__circle"
+                                class="progress-ring__circle"
+                                stroke="#5B68E8"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="140"
+                                cx="150"
+                                cy="150"
+                                stroke-dasharray="879.65 879.65"
+                                stroke-dashoffset="0"
+                                transform="rotate(-90 150 150)"/>
+                    </svg>
+                    <span id="timer-display" class="time">25:00</span>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn" class="btn-start">開始</button>
+                    <button id="reset-btn" class="btn-reset">リセット</button>
+                </div>
+            </div>
+            
+            <div class="stats-section">
+                <h2>今日の進捗</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span id="completed-count" class="stat-value">0</span>
+                        <span class="stat-label">完了</span>
+                    </div>
+                    <div class="stat-item">
+                        <span id="focus-time" class="stat-value">0分</span>
+                        <span class="stat-label">集中時間</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api-client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui-controller.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
