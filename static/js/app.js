@@ -97,6 +97,9 @@ function initTimer() {
             // プログレスバーを100%に設定
             uiController.updateProgressBar(1.0);
             
+            // 背景エフェクトを停止
+            uiController.stopBackgroundEffects();
+            
             // 通知音を再生
             uiController.playSound();
             
@@ -128,15 +131,22 @@ function initTimer() {
             }
         },
         onStart: () => {
-            updateStatus('作業中', 'working');
+            const statusType = currentSessionType === 'work' ? 'working' : 'resting';
+            const statusText = currentSessionType === 'work' ? '作業中' : '休憩中';
+            updateStatus(statusText, statusType);
             updateButtonState(true);
             
-            // プログレスバーの色を設定
-            uiController.updateProgressColor('work');
+            // 作業モードの場合のみ背景エフェクトを開始
+            if (currentSessionType === 'work') {
+                uiController.startBackgroundEffects();
+            }
         },
         onStop: () => {
             updateStatus('停止中', 'stopped');
             updateButtonState(false);
+            
+            // 背景エフェクトを停止
+            uiController.stopBackgroundEffects();
         }
     });
 }
@@ -180,6 +190,9 @@ async function handleResetClick() {
         
         // プログレスバーをリセット
         uiController.resetProgressBar();
+        
+        // 背景エフェクトを停止
+        uiController.stopBackgroundEffects();
         
         // 現在のセッションがある場合はサーバー側でもリセット
         if (currentSessionId) {

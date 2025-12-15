@@ -484,6 +484,94 @@ button:active::before {
 }
 
 /* ========================================
+   背景エフェクト（集中モード）
+   ======================================== */
+
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.background-effects.active {
+    opacity: 1;
+}
+
+/* パーティクルアニメーション */
+.particle {
+    position: absolute;
+    bottom: -10px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(91, 104, 232, 0.6), rgba(91, 104, 232, 0));
+    border-radius: 50%;
+    animation: float-up 20s infinite ease-in;
+    opacity: 0;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(calc(-50px + var(--random-x, 0px))) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* 波紋エフェクト */
+.ripple-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ripple {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(91, 104, 232, 0.3);
+    border-radius: 50%;
+    animation: ripple-expand 6s infinite ease-out;
+}
+
+@keyframes ripple-expand {
+    0% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    100% {
+        width: 800px;
+        height: 800px;
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
+/* ========================================
    レスポンシブデザイン
    ======================================== */
 
