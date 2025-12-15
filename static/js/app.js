@@ -24,6 +24,7 @@ const apiClient = new PomodoroAPIClient();
 
 // UI コントローラー
 const uiController = new UIController();
+window.uiController = uiController; // Make globally accessible
 
 /**
  * 秒をMM:SS形式にフォーマット
@@ -110,12 +111,17 @@ function initTimer() {
             if (currentSessionId) {
                 try {
                     updateButtonState(false, true); // ローディング状態
-                    await apiClient.completeSession(currentSessionId);
+                    const result = await apiClient.completeSession(currentSessionId);
                     console.log('セッション完了:', currentSessionId);
                     currentSessionId = null;
                     
                     // 統計を更新
                     await uiController.loadTodayStats(apiClient);
+                    
+                    // ゲーミフィケーション更新を処理
+                    if (result.gamification && window.gamificationController) {
+                        window.gamificationController.handleSessionCompletion(result.gamification);
+                    }
                     
                     // 成功メッセージ
                     uiController.showToast('セッションが完了しました', 'success');
@@ -207,7 +213,7 @@ async function handleResetClick() {
 /**
  * アプリケーション初期化
  */
-function initApp() {
+async function initApp() {
     // 初期表示を設定
     updateTimerDisplay(currentDuration);
     updateStatus('停止中', 'stopped');
@@ -218,6 +224,14 @@ function initApp() {
     // イベントリスナーを設定
     startBtn.addEventListener('click', handleStartClick);
     resetBtn.addEventListener('click', handleResetClick);
+    
+    // ゲーミフィケーションコントローラーを初期化
+    if (window.GamificationController) {
+        window.gamificationController = new window.GamificationController(apiClient);
+        await window.gamificationController.init().catch(error => {
+            console.error('ゲーミフィケーションの読み込みに失敗:', error);
+        });
+    }
     
     // 統計を初期ロード
     uiController.loadTodayStats(apiClient).catch(error => {
