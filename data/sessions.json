@@ -294,5 +294,21 @@
     "end_time": null,
     "duration_minutes": 25,
     "completed": false
+  },
+  {
+    "id": "eb338cf2-5b06-4b95-89fd-89b541b523b5",
+    "session_type": "work",
+    "start_time": "2025-12-15T17:18:47.043063",
+    "end_time": null,
+    "duration_minutes": 25,
+    "completed": false
+  },
+  {
+    "id": "d1b97cf3-1299-4af7-b611-8fad32d5f487",
+    "session_type": "work",
+    "start_time": "2025-12-15T17:22:21.057230",
+    "end_time": null,
+    "duration_minutes": 25,
+    "completed": false
   }
 ]

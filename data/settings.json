@@ -1,7 +1,7 @@
 {
-  "work_duration": 25,
+  "work_duration": 15,
   "break_duration": 5,
-  "theme": "focus",
+  "theme": "light",
   "sound_start": true,
   "sound_end": true,
   "sound_tick": false

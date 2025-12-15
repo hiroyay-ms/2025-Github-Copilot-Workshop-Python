@@ -8,6 +8,7 @@ from app.services.stats_service import StatsService
 from app.services.gamification_service import GamificationService
 from app.repositories.session_repository import JSONSessionRepository
 from app.repositories.user_profile_repository import UserProfileRepository
+from app.repositories.settings_repository import JSONSettingsRepository
 
 # Create blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -28,6 +29,9 @@ gamification_service = GamificationService(
     profile_repository=profile_repository,
     session_repository=repository
 )
+
+# Settings repository
+settings_repository = JSONSettingsRepository(str(Config.SETTINGS_FILE))
 
 # Default user ID for single-user application
 DEFAULT_USER_ID = 'default'

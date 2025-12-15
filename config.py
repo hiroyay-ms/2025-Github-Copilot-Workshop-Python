@@ -27,6 +27,7 @@ class Config:
     DATA_DIR = BASE_DIR / 'data'
     DATA_FILE = DATA_DIR / 'sessions.json'
     USER_PROFILE_FILE = DATA_DIR / 'user_profiles.json'
+    SETTINGS_FILE = DATA_DIR / 'settings.json'
     
     # CORS設定
     CORS_ORIGINS = ['http://localhost:5000']

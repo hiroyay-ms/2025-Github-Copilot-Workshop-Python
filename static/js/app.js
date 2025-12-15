@@ -22,6 +22,10 @@ const apiClient = new PomodoroAPIClient();
 const uiController = new UIController();
 window.uiController = uiController; // Make globally accessible
 
+// Settings Manager
+const settingsManager = new SettingsManager(apiClient);
+window.settingsManager = settingsManager; // Make globally accessible
+
 /**
  * 秒をMM:SS形式にフォーマット
  * @param {number} seconds - 秒数
@@ -280,6 +284,9 @@ async function initApp() {
     
     // ゲーミフィケーションを初期化
     await initGamification();
+    
+    // 設定を初期化
+    await settingsManager.loadSettings();
     
     // Listen for settings changes
     window.addEventListener('settingsChanged', (event) => {

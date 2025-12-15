@@ -982,6 +982,11 @@ button:active::before {
    Theme Styles
    ======================================== */
 
+/* Light Theme (Default) */
+body.theme-light {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
 /* Dark Theme */
 body.theme-dark {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
