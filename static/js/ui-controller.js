@@ -61,11 +61,14 @@ class UIController {
      * @param {number} progress - Progress value (0.0 to 1.0)
      */
     updateProgressBar(progress) {
-        if (!this.progressCircle) return;
+        if (!this.progressCircle) {
+            console.error('progressCircle is null in updateProgressBar');
+            return;
+        }
         
         // 進捗率からオフセットを計算（0% = circumference, 100% = 0）
         const offset = this.circumference * (1 - progress);
-        this.progressCircle.style.strokeDashoffset = offset;
+        this.progressCircle.setAttribute('stroke-dashoffset', offset);
         
         // 進捗に応じた色のグラデーション変化（青→黄→赤）
         this.updateProgressColorGradient(progress);
@@ -76,7 +79,10 @@ class UIController {
      * @param {number} progress - Progress value (0.0 to 1.0)
      */
     updateProgressColorGradient(progress) {
-        if (!this.progressCircle) return;
+        if (!this.progressCircle) {
+            console.error('progressCircle element not found');
+            return;
+        }
         
         let color;
         if (progress < 0.5) {
@@ -89,7 +95,9 @@ class UIController {
             color = this.interpolateColor('#FFC107', '#F44336', ratio);
         }
         
-        this.progressCircle.style.stroke = color;
+        // SVG要素の属性として設定
+        this.progressCircle.setAttribute('stroke', color);
+        console.log(`進捗: ${(progress * 100).toFixed(0)}% - 色: ${color}`);
     }
     
     /**
@@ -141,7 +149,10 @@ class UIController {
      */
     resetProgressBar() {
         this.updateProgressBar(0);
-        this.updateProgressColor('work');
+        // 初期色（青）を設定
+        if (this.progressCircle) {
+            this.progressCircle.setAttribute('stroke', '#5B68E8');
+        }
     }
 
     /**
@@ -349,8 +360,11 @@ class UIController {
      * Start background effects (particles or ripples) during focus time
      */
     startBackgroundEffects() {
+        console.log('startBackgroundEffects called');
+        
         // 既に存在する場合は何もしない
         if (document.getElementById('background-effects')) {
+            console.log('Background effects already exist');
             return;
         }
         
@@ -358,6 +372,8 @@ class UIController {
         const effectsContainer = document.createElement('div');
         effectsContainer.id = 'background-effects';
         effectsContainer.className = 'background-effects';
+        
+        console.log('Creating background effects container');
         
         // パーティクルを生成
         for (let i = 0; i < 20; i++) {
@@ -368,10 +384,12 @@ class UIController {
             const randomX = Math.random() * 100;
             const randomDelay = Math.random() * 15;
             const randomDuration = 15 + Math.random() * 10;
+            const randomXOffset = (Math.random() - 0.5) * 100; // -50px to 50px
             
             particle.style.left = `${randomX}%`;
             particle.style.animationDelay = `${randomDelay}s`;
             particle.style.animationDuration = `${randomDuration}s`;
+            particle.style.setProperty('--random-x', `${randomXOffset}px`);
             
             effectsContainer.appendChild(particle);
         }
@@ -388,10 +406,20 @@ class UIController {
         effectsContainer.appendChild(rippleContainer);
         
         document.body.appendChild(effectsContainer);
+        console.log('Background effects appended to body');
+        console.log('effectsContainer parent:', effectsContainer.parentElement);
+        console.log('effectsContainer in DOM:', document.getElementById('background-effects'));
         
         // フェードインアニメーション
         setTimeout(() => {
-            effectsContainer.classList.add('active');
+            const elem = document.getElementById('background-effects');
+            if (elem) {
+                elem.classList.add('active');
+                console.log('Active class added to background effects');
+                console.log('Element still in DOM:', elem.parentElement);
+            } else {
+                console.error('Background effects element disappeared!');
+            }
         }, 100);
     }
     
@@ -399,12 +427,17 @@ class UIController {
      * Stop background effects
      */
     stopBackgroundEffects() {
+        console.log('stopBackgroundEffects called');
         const effectsContainer = document.getElementById('background-effects');
         if (effectsContainer) {
+            console.log('Removing background effects');
             effectsContainer.classList.remove('active');
             setTimeout(() => {
                 effectsContainer.remove();
+                console.log('Background effects removed from DOM');
             }, 500);
+        } else {
+            console.log('No background effects to remove');
         }
     }
 }

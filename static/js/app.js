@@ -138,6 +138,9 @@ function initTimer() {
             updateStatus(statusText, statusType);
             updateButtonState(true);
             
+            // プログレスバーを0%から開始（色変化の初期化）
+            uiController.updateProgressBar(0);
+            
             // 作業モードの場合のみ背景エフェクトを開始
             if (currentSessionType === 'work') {
                 uiController.startBackgroundEffects();
