@@ -20,6 +20,24 @@ class UIController {
         
         // 通知許可状態
         this.notificationPermission = 'default';
+        
+        // Sound settings
+        this.soundSettings = {
+            start: true,
+            end: true,
+            tick: false
+        };
+    }
+
+    /**
+     * Update sound settings
+     * @param {Object} settings - Sound settings
+     * @param {boolean} settings.start - Enable start sound
+     * @param {boolean} settings.end - Enable end sound
+     * @param {boolean} settings.tick - Enable tick sound
+     */
+    updateSoundSettings(settings) {
+        this.soundSettings = { ...this.soundSettings, ...settings };
     }
 
     /**
@@ -91,6 +109,11 @@ class UIController {
      * Play notification sound
      */
     playSound() {
+        // Check if sound is enabled
+        if (!this.soundSettings.end) {
+            return;
+        }
+        
         try {
             // 音声を最初から再生
             this.notificationSound.currentTime = 0;

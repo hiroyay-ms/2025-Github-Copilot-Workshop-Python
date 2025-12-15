@@ -3,10 +3,6 @@
  * タイマーとUIを統合する
  */
 
-// 定数定義
-const WORK_DURATION = 25 * 60; // 25分を秒に変換
-const BREAK_DURATION = 5 * 60; // 5分を秒に変換
-
 // DOM要素
 const timerDisplay = document.getElementById('timer-display');
 const statusText = document.getElementById('status-text');
@@ -15,7 +11,7 @@ const resetBtn = document.getElementById('reset-btn');
 
 // タイマーインスタンス
 let timer = null;
-let currentDuration = WORK_DURATION;
+let currentDuration = 25 * 60; // Default 25 minutes
 let currentSessionId = null; // 現在のセッションID
 let currentSessionType = 'work'; // 現在のセッションタイプ
 
@@ -24,6 +20,10 @@ const apiClient = new PomodoroAPIClient();
 
 // UI コントローラー
 const uiController = new UIController();
+window.uiController = uiController; // Make it globally accessible for settings manager
+
+// Settings manager
+const settingsManager = new SettingsManager(apiClient);
 
 /**
  * 秒をMM:SS形式にフォーマット
@@ -207,7 +207,16 @@ async function handleResetClick() {
 /**
  * アプリケーション初期化
  */
-function initApp() {
+async function initApp() {
+    // Load settings first
+    try {
+        const settings = await settingsManager.loadSettings();
+        currentDuration = settings.work_duration * 60; // Convert to seconds
+        console.log('Settings loaded:', settings);
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+    
     // 初期表示を設定
     updateTimerDisplay(currentDuration);
     updateStatus('停止中', 'stopped');
@@ -218,6 +227,25 @@ function initApp() {
     // イベントリスナーを設定
     startBtn.addEventListener('click', handleStartClick);
     resetBtn.addEventListener('click', handleResetClick);
+    
+    // Listen for settings changes
+    window.addEventListener('settingsChanged', (event) => {
+        const settings = event.detail;
+        console.log('Settings changed:', settings);
+        
+        // Update current duration if timer is not running
+        if (!timer || !timer.isActive()) {
+            currentDuration = settings.work_duration * 60;
+            updateTimerDisplay(currentDuration);
+        }
+        
+        // Update sound settings in UI controller
+        uiController.updateSoundSettings({
+            start: settings.sound_start,
+            end: settings.sound_end,
+            tick: settings.sound_tick
+        });
+    });
     
     // 統計を初期ロード
     uiController.loadTodayStats(apiClient).catch(error => {

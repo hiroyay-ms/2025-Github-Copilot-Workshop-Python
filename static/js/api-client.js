@@ -48,6 +48,23 @@ class PomodoroAPIClient {
     }
 
     /**
+     * Get user settings
+     * @returns {Promise<Object>} User settings data
+     */
+    async getSettings() {
+        return this._get('/settings');
+    }
+
+    /**
+     * Save user settings
+     * @param {Object} settings - Settings object
+     * @returns {Promise<Object>} Saved settings data
+     */
+    async saveSettings(settings) {
+        return this._post('/settings', settings);
+    }
+
+    /**
      * Perform a GET request
      * @private
      * @param {string} endpoint - API endpoint path
