@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable
+from typing import Callable, Optional
 
 
 class BadgeType(Enum):
@@ -125,14 +125,14 @@ BADGE_DEFINITIONS = [
 ]
 
 
-def get_badge_by_id(badge_id: str) -> Badge:
+def get_badge_by_id(badge_id: str) -> Optional[Badge]:
     """Get badge definition by ID.
     
     Args:
         badge_id: Badge identifier
         
     Returns:
-        Badge definition or None
+        Badge definition or None if not found
     """
     for badge in BADGE_DEFINITIONS:
         if badge.badge_id == badge_id:

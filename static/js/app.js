@@ -211,6 +211,48 @@ async function handleResetClick() {
 }
 
 /**
+ * ゲーミフィケーション初期化
+ */
+async function initGamification() {
+    if (window.GamificationController) {
+        window.gamificationController = new window.GamificationController(apiClient);
+        await window.gamificationController.init().catch(error => {
+            console.error('ゲーミフィケーションの読み込みに失敗:', error);
+        });
+    }
+}
+
+/**
+ * イベントリスナー初期化
+ */
+function initEventListeners() {
+    startBtn.addEventListener('click', handleStartClick);
+    resetBtn.addEventListener('click', handleResetClick);
+}
+
+/**
+ * 統計初期化
+ */
+async function initStats() {
+    await uiController.loadTodayStats(apiClient).catch(error => {
+        console.error('統計の読み込みに失敗:', error);
+        uiController.showToast('統計の読み込みに失敗しました', 'warning');
+    });
+}
+
+/**
+ * 通知初期化
+ */
+async function initNotifications() {
+    const permission = await uiController.requestNotificationPermission();
+    if (permission === 'granted') {
+        console.log('通知が許可されました');
+    } else {
+        console.log('通知が拒否されました');
+    }
+}
+
+/**
  * アプリケーション初期化
  */
 async function initApp() {
@@ -222,34 +264,16 @@ async function initApp() {
     uiController.resetProgressBar();
     
     // イベントリスナーを設定
-    startBtn.addEventListener('click', handleStartClick);
-    resetBtn.addEventListener('click', handleResetClick);
+    initEventListeners();
     
-    // ゲーミフィケーションコントローラーを初期化
-    if (window.GamificationController) {
-        window.gamificationController = new window.GamificationController(apiClient);
-        await window.gamificationController.init().catch(error => {
-            console.error('ゲーミフィケーションの読み込みに失敗:', error);
-        });
-    }
+    // ゲーミフィケーションを初期化
+    await initGamification();
     
     // 統計を初期ロード
-    uiController.loadTodayStats(apiClient).catch(error => {
-        console.error('統計の読み込みに失敗:', error);
-        uiController.showToast('統計の読み込みに失敗しました', 'warning');
-    });
+    await initStats();
     
     // 通知許可をリクエスト
-    uiController.requestNotificationPermission().then(permission => {
-        if (permission === 'granted') {
-            console.log('通知が許可されました');
-        } else if (permission === 'denied') {
-            console.log('通知が拒否されました');
-            uiController.showToast('通知がブロックされています', 'info', 5000);
-        } else {
-            console.log('通知の許可が未設定です');
-        }
-    });
+    await initNotifications();
     
     console.log('ポモドーロタイマーアプリケーションを起動しました');
 }
