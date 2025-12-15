@@ -66,8 +66,8 @@ class UIController {
             return;
         }
         
-        // 進捗率からオフセットを計算（0% = circumference, 100% = 0）
-        const offset = this.circumference * (1 - progress);
+        // 進捗率からオフセットを計算（0% = 0, 100% = circumference）
+        const offset = this.circumference * progress;
         this.progressCircle.setAttribute('stroke-dashoffset', offset);
         
         // 進捗に応じた色のグラデーション変化（青→黄→赤）
@@ -148,10 +148,12 @@ class UIController {
      * Reset progress bar to initial state
      */
     resetProgressBar() {
-        this.updateProgressBar(0);
-        // 初期色（青）を設定
+        // プログレスバーを初期状態に設定（stroke-dashoffset = 0）
         if (this.progressCircle) {
-            this.progressCircle.setAttribute('stroke', '#5B68E8');
+            this.progressCircle.setAttribute('stroke-dashoffset', '0');
+            // 初期色（濃い青）を設定
+            this.progressCircle.setAttribute('stroke', '#3b52d4');
+            this.progressCircle.setAttribute('stroke-opacity', '1');
         }
     }
 

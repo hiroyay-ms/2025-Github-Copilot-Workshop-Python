@@ -162,16 +162,20 @@ h1 {
 }
 
 .timer-display {
-    margin: 48px 0;
+    margin: 48px auto;
     position: relative;
-    display: inline-block;
+    display: block;
+    width: 300px;
+    height: 300px;
     z-index: 10;
 }
 
 /* 円形プログレスバー */
 .progress-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: block;
-    margin: 0 auto;
     filter: drop-shadow(0 4px 12px rgba(91, 104, 232, 0.2));
     transition: filter var(--transition-normal);
 }
@@ -181,15 +185,15 @@ h1 {
 }
 
 .progress-ring__background {
-    opacity: 0.15;
+    opacity: 1 !important;
     stroke: var(--border-color);
 }
 
 .progress-ring__circle {
     transition: stroke-dashoffset 0.5s ease;
-    transform-origin: center;
     stroke-linecap: round;
-    opacity: 1;
+    opacity: 1 !important;
+    stroke-opacity: 1 !important;
 }
 
 /* .work と .break クラスは動的な色変化を妨げるため削除
@@ -646,12 +650,6 @@ button:active::before {
         height: 260px;
     }
     
-    .progress-ring circle {
-        r: 120;
-        cx: 130;
-        cy: 130;
-    }
-    
     .time {
         font-size: 56px;
     }
@@ -707,12 +705,6 @@ button:active::before {
     .progress-ring {
         width: 220px;
         height: 220px;
-    }
-    
-    .progress-ring circle {
-        r: 100;
-        cx: 110;
-        cy: 110;
     }
     
     .time {

@@ -19,23 +19,24 @@
                 
                 <div class="timer-display">
                     <!-- 円形プログレスバー -->
-                    <svg class="progress-ring" width="300" height="300">
+                    <svg class="progress-ring" width="300" height="300" viewBox="0 0 300 300">
                         <circle class="progress-ring__background"
                                 stroke="#e0e0e0"
                                 stroke-width="12"
-                                fill="transparent"
-                                r="140"
-                                cx="150"
-                                cy="150"/>
-                        <circle id="progress-ring__circle"
-                                class="progress-ring__circle"
-                                stroke="#5B68E8"
-                                stroke-width="12"
-                                fill="transparent"
+                                fill="none"
                                 r="140"
                                 cx="150"
                                 cy="150"
-                                stroke-dasharray="879.65 879.65"
+                                transform="rotate(-90 150 150)"/>
+                        <circle id="progress-ring__circle"
+                                class="progress-ring__circle"
+                                stroke="#3b52d4"
+                                stroke-width="12"
+                                fill="none"
+                                r="140"
+                                cx="150"
+                                cy="150"
+                                stroke-dasharray="879.65"
                                 stroke-dashoffset="0"
                                 transform="rotate(-90 150 150)"/>
                     </svg>
