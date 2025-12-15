@@ -212,3 +212,77 @@ def get_today_stats():
         
     except Exception as e:
         return jsonify({'error': 'Internal server error'}), 500
+
+
+@api_bp.route('/settings', methods=['GET'])
+def get_settings():
+    """Get user settings.
+    
+    Returns:
+        JSON response with current user settings:
+        - work_duration: Work session duration in minutes
+        - break_duration: Break session duration in minutes
+        - theme: UI theme ('light', 'dark', 'focus')
+        - sound_start: Enable start sound
+        - sound_end: Enable end/completion sound
+        - sound_tick: Enable tick sound
+        
+    Status Codes:
+        200: Settings retrieved successfully
+        500: Internal server error
+    """
+    try:
+        settings = settings_repository.load()
+        return jsonify(settings.to_dict()), 200
+    except Exception as e:
+        return jsonify({'error': 'Internal server error'}), 500
+
+
+@api_bp.route('/settings', methods=['POST'])
+def save_settings():
+    """Save user settings.
+    
+    Request JSON:
+        {
+            "work_duration": 25,
+            "break_duration": 5,
+            "theme": "light",
+            "sound_start": true,
+            "sound_end": true,
+            "sound_tick": false
+        }
+        
+    Response JSON:
+        {
+            "work_duration": 25,
+            "break_duration": 5,
+            "theme": "light",
+            "sound_start": true,
+            "sound_end": true,
+            "sound_tick": false
+        }
+        
+    Status Codes:
+        200: Settings saved successfully
+        400: Invalid settings data
+        500: Internal server error
+    """
+    try:
+        data = request.get_json(force=True, silent=True)
+        
+        if data is None:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Create and validate settings
+        from app.models.settings import UserSettings
+        settings = UserSettings.from_dict(data)
+        
+        # Save settings
+        settings_repository.save(settings)
+        
+        return jsonify(settings.to_dict()), 200
+        
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': 'Internal server error'}), 500

@@ -94,6 +94,7 @@ body {
 header {
     text-align: center;
     margin-bottom: 48px;
+    position: relative;
 }
 
 h1 {
@@ -102,6 +103,29 @@ h1 {
     color: var(--text-dark);
     letter-spacing: -0.5px;
     margin-bottom: 8px;
+}
+
+.btn-settings {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+    min-width: auto;
+}
+
+.btn-settings:hover {
+    background: var(--bg-light);
+    transform: rotate(90deg);
+}
+
+.btn-settings:active {
+    transform: rotate(90deg) scale(0.95);
 }
 
 /* ========================================
@@ -484,6 +508,94 @@ button:active::before {
 }
 
 /* ========================================
+   背景エフェクト（集中モード）
+   ======================================== */
+
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.background-effects.active {
+    opacity: 1;
+}
+
+/* パーティクルアニメーション */
+.particle {
+    position: absolute;
+    bottom: -10px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(91, 104, 232, 0.6), rgba(91, 104, 232, 0));
+    border-radius: 50%;
+    animation: float-up 20s infinite ease-in;
+    opacity: 0;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(calc(-50px + var(--random-x, 0px))) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* 波紋エフェクト */
+.ripple-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ripple {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(91, 104, 232, 0.3);
+    border-radius: 50%;
+    animation: ripple-expand 6s infinite ease-out;
+}
+
+@keyframes ripple-expand {
+    0% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    100% {
+        width: 800px;
+        height: 800px;
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
+/* ========================================
    レスポンシブデザイン
    ======================================== */
 
@@ -611,6 +723,375 @@ button:active::before {
     .stat-label {
         font-size: 13px;
     }
+}
+
+/* ========================================
+   Settings Modal
+   ======================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: var(--bg-white);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+    min-width: auto;
+}
+
+.btn-close:hover {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    transform: none;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.settings-group {
+    margin-bottom: 32px;
+}
+
+.settings-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings-group h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+}
+
+.setting-item {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    font-size: 16px;
+    color: var(--text-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.setting-item input[type="checkbox"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.select-input {
+    padding: 8px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 16px;
+    color: var(--text-dark);
+    background: var(--bg-white);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.select-input:hover {
+    border-color: var(--primary-color);
+}
+
+.select-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(91, 104, 232, 0.1);
+}
+
+.radio-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.radio-group label {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.radio-group label:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-light);
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.radio-group input[type="radio"]:checked + .radio-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Using :has() for modern browsers */
+.radio-group label:has(input[type="radio"]:checked) {
+    border-color: var(--primary-color);
+    background: rgba(91, 104, 232, 0.05);
+}
+
+/* Fallback using JavaScript-added class for older browsers */
+.radio-group label.checked {
+    border-color: var(--primary-color);
+    background: rgba(91, 104, 232, 0.05);
+}
+
+.radio-label {
+    flex: 1;
+}
+
+.modal-footer {
+    padding: 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-medium);
+    border: 2px solid var(--border-color);
+    padding: 12px 24px;
+    border-radius: var(--border-radius-full);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.btn-cancel:hover {
+    background: var(--bg-light);
+    border-color: var(--text-medium);
+    transform: none;
+}
+
+.btn-save {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--border-radius-full);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(91, 104, 232, 0.3);
+}
+
+.btn-save:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 6px 20px rgba(91, 104, 232, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-save:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   Theme Styles
+   ======================================== */
+
+/* Dark Theme */
+body.theme-dark {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.theme-dark .container {
+    background: #2d2d44;
+    color: #e0e0e0;
+}
+
+body.theme-dark h1,
+body.theme-dark h2,
+body.theme-dark h3,
+body.theme-dark .time,
+body.theme-dark .stat-value {
+    color: #e0e0e0;
+}
+
+body.theme-dark .status-text,
+body.theme-dark .stat-label {
+    color: #a0a0b0;
+}
+
+body.theme-dark .stats-section {
+    background: #1f1f30;
+}
+
+body.theme-dark .stats-section:hover {
+    background: #252538;
+}
+
+body.theme-dark .stat-item:hover {
+    background: #2d2d44;
+}
+
+body.theme-dark .modal-content {
+    background: #2d2d44;
+}
+
+body.theme-dark .modal-header,
+body.theme-dark .modal-footer {
+    border-color: #3d3d54;
+}
+
+body.theme-dark .setting-item label {
+    color: #b0b0c0;
+}
+
+body.theme-dark .select-input,
+body.theme-dark .radio-group label {
+    background: #1f1f30;
+    border-color: #3d3d54;
+    color: #e0e0e0;
+}
+
+body.theme-dark .select-input:hover,
+body.theme-dark .radio-group label:hover {
+    border-color: var(--primary-light);
+}
+
+body.theme-dark .btn-settings:hover {
+    background: #3d3d54;
+}
+
+/* Focus Theme (Minimal) */
+body.theme-focus {
+    background: #f5f5f5;
+}
+
+body.theme-focus .container {
+    background: white;
+    box-shadow: none;
+    border: 1px solid #e0e0e0;
+}
+
+body.theme-focus h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+body.theme-focus .status-text {
+    font-size: 14px;
+    color: #666;
+}
+
+body.theme-focus .stats-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+}
+
+body.theme-focus .stats-section:hover {
+    background: #fafafa;
+}
+
+body.theme-focus .progress-ring {
+    filter: none;
+}
+
+body.theme-focus .btn-start,
+body.theme-focus .btn-save {
+    background: #333;
+    box-shadow: none;
+}
+
+body.theme-focus .btn-start:hover,
+body.theme-focus .btn-save:hover {
+    background: #555;
+    box-shadow: none;
+}
+
+body.theme-focus .btn-reset,
+body.theme-focus .btn-cancel {
+    border-color: #999;
+    color: #666;
 }
 
 /* ダークモード対応（オプション） */

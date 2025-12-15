@@ -3,10 +3,6 @@
  * タイマーとUIを統合する
  */
 
-// 定数定義
-const WORK_DURATION = 25 * 60; // 25分を秒に変換
-const BREAK_DURATION = 5 * 60; // 5分を秒に変換
-
 // DOM要素
 const timerDisplay = document.getElementById('timer-display');
 const statusText = document.getElementById('status-text');
@@ -15,7 +11,7 @@ const resetBtn = document.getElementById('reset-btn');
 
 // タイマーインスタンス
 let timer = null;
-let currentDuration = WORK_DURATION;
+let currentDuration = 25 * 60; // Default 25 minutes
 let currentSessionId = null; // 現在のセッションID
 let currentSessionType = 'work'; // 現在のセッションタイプ
 
@@ -98,6 +94,9 @@ function initTimer() {
             // プログレスバーを100%に設定
             uiController.updateProgressBar(1.0);
             
+            // 背景エフェクトを停止
+            uiController.stopBackgroundEffects();
+            
             // 通知音を再生
             uiController.playSound();
             
@@ -134,15 +133,22 @@ function initTimer() {
             }
         },
         onStart: () => {
-            updateStatus('作業中', 'working');
+            const statusType = currentSessionType === 'work' ? 'working' : 'resting';
+            const statusText = currentSessionType === 'work' ? '作業中' : '休憩中';
+            updateStatus(statusText, statusType);
             updateButtonState(true);
             
-            // プログレスバーの色を設定
-            uiController.updateProgressColor('work');
+            // 作業モードの場合のみ背景エフェクトを開始
+            if (currentSessionType === 'work') {
+                uiController.startBackgroundEffects();
+            }
         },
         onStop: () => {
             updateStatus('停止中', 'stopped');
             updateButtonState(false);
+            
+            // 背景エフェクトを停止
+            uiController.stopBackgroundEffects();
         }
     });
 }
@@ -186,6 +192,9 @@ async function handleResetClick() {
         
         // プログレスバーをリセット
         uiController.resetProgressBar();
+        
+        // 背景エフェクトを停止
+        uiController.stopBackgroundEffects();
         
         // 現在のセッションがある場合はサーバー側でもリセット
         if (currentSessionId) {
@@ -268,6 +277,25 @@ async function initApp() {
     
     // ゲーミフィケーションを初期化
     await initGamification();
+    
+    // Listen for settings changes
+    window.addEventListener('settingsChanged', (event) => {
+        const settings = event.detail;
+        console.log('Settings changed:', settings);
+        
+        // Update current duration if timer is not running
+        if (!timer || !timer.isActive()) {
+            currentDuration = settings.work_duration * 60;
+            updateTimerDisplay(currentDuration);
+        }
+        
+        // Update sound settings in UI controller
+        uiController.updateSoundSettings({
+            start: settings.sound_start,
+            end: settings.sound_end,
+            tick: settings.sound_tick
+        });
+    });
     
     // 統計を初期ロード
     await initStats();

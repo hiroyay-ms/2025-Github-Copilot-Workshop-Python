@@ -20,6 +20,24 @@ class UIController {
         
         // 通知許可状態
         this.notificationPermission = 'default';
+        
+        // Sound settings
+        this.soundSettings = {
+            start: true,
+            end: true,
+            tick: false
+        };
+    }
+
+    /**
+     * Update sound settings
+     * @param {Object} settings - Sound settings
+     * @param {boolean} settings.start - Enable start sound
+     * @param {boolean} settings.end - Enable end sound
+     * @param {boolean} settings.tick - Enable tick sound
+     */
+    updateSoundSettings(settings) {
+        this.soundSettings = { ...this.soundSettings, ...settings };
     }
 
     /**
@@ -48,6 +66,58 @@ class UIController {
         // 進捗率からオフセットを計算（0% = circumference, 100% = 0）
         const offset = this.circumference * (1 - progress);
         this.progressCircle.style.strokeDashoffset = offset;
+        
+        // 進捗に応じた色のグラデーション変化（青→黄→赤）
+        this.updateProgressColorGradient(progress);
+    }
+    
+    /**
+     * Update progress bar color based on progress (gradient from blue to yellow to red)
+     * @param {number} progress - Progress value (0.0 to 1.0)
+     */
+    updateProgressColorGradient(progress) {
+        if (!this.progressCircle) return;
+        
+        let color;
+        if (progress < 0.5) {
+            // 0-50%: 青(#5B68E8)から黄(#FFC107)へ
+            const ratio = progress * 2; // 0.0 to 1.0
+            color = this.interpolateColor('#5B68E8', '#FFC107', ratio);
+        } else {
+            // 50-100%: 黄(#FFC107)から赤(#F44336)へ
+            const ratio = (progress - 0.5) * 2; // 0.0 to 1.0
+            color = this.interpolateColor('#FFC107', '#F44336', ratio);
+        }
+        
+        this.progressCircle.style.stroke = color;
+    }
+    
+    /**
+     * Interpolate between two colors
+     * @param {string} color1 - Starting color (hex)
+     * @param {string} color2 - Ending color (hex)
+     * @param {number} ratio - Interpolation ratio (0.0 to 1.0)
+     * @returns {string} Interpolated color (hex)
+     */
+    interpolateColor(color1, color2, ratio) {
+        const hex = (color) => {
+            const c = color.substring(1);
+            return parseInt(c, 16);
+        };
+        
+        const r1 = (hex(color1) >> 16) & 255;
+        const g1 = (hex(color1) >> 8) & 255;
+        const b1 = hex(color1) & 255;
+        
+        const r2 = (hex(color2) >> 16) & 255;
+        const g2 = (hex(color2) >> 8) & 255;
+        const b2 = hex(color2) & 255;
+        
+        const r = Math.round(r1 + (r2 - r1) * ratio);
+        const g = Math.round(g1 + (g2 - g1) * ratio);
+        const b = Math.round(b1 + (b2 - b1) * ratio);
+        
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
     }
 
     /**
@@ -91,6 +161,11 @@ class UIController {
      * Play notification sound
      */
     playSound() {
+        // Check if sound is enabled
+        if (!this.soundSettings.end) {
+            return;
+        }
+        
         try {
             // 音声を最初から再生
             this.notificationSound.currentTime = 0;
@@ -267,6 +342,69 @@ class UIController {
         if (statusElement) {
             statusElement.textContent = status;
             statusElement.className = `status-text ${type}`;
+        }
+    }
+    
+    /**
+     * Start background effects (particles or ripples) during focus time
+     */
+    startBackgroundEffects() {
+        // 既に存在する場合は何もしない
+        if (document.getElementById('background-effects')) {
+            return;
+        }
+        
+        // 背景エフェクトコンテナを作成
+        const effectsContainer = document.createElement('div');
+        effectsContainer.id = 'background-effects';
+        effectsContainer.className = 'background-effects';
+        
+        // パーティクルを生成
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // ランダムな位置とアニメーション遅延
+            const randomX = Math.random() * 100;
+            const randomDelay = Math.random() * 15;
+            const randomDuration = 15 + Math.random() * 10;
+            
+            particle.style.left = `${randomX}%`;
+            particle.style.animationDelay = `${randomDelay}s`;
+            particle.style.animationDuration = `${randomDuration}s`;
+            
+            effectsContainer.appendChild(particle);
+        }
+        
+        // 波紋エフェクトを追加
+        const rippleContainer = document.createElement('div');
+        rippleContainer.className = 'ripple-container';
+        for (let i = 0; i < 3; i++) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.animationDelay = `${i * 2}s`;
+            rippleContainer.appendChild(ripple);
+        }
+        effectsContainer.appendChild(rippleContainer);
+        
+        document.body.appendChild(effectsContainer);
+        
+        // フェードインアニメーション
+        setTimeout(() => {
+            effectsContainer.classList.add('active');
+        }, 100);
+    }
+    
+    /**
+     * Stop background effects
+     */
+    stopBackgroundEffects() {
+        const effectsContainer = document.getElementById('background-effects');
+        if (effectsContainer) {
+            effectsContainer.classList.remove('active');
+            setTimeout(() => {
+                effectsContainer.remove();
+            }, 500);
         }
     }
 }
