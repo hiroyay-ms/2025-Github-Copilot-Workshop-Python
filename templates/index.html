@@ -61,6 +61,49 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Gamification Section -->
+            <div class="gamification-section">
+                <h2>プロフィール</h2>
+                <div class="profile-card">
+                    <div class="level-display">
+                        <span class="level-label">レベル</span>
+                        <span id="user-level" class="level-value">1</span>
+                    </div>
+                    <div class="xp-display">
+                        <div class="xp-bar-container">
+                            <div id="xp-bar" class="xp-bar" style="width: 0%"></div>
+                        </div>
+                        <span id="xp-text" class="xp-text">0 / 100 XP</span>
+                    </div>
+                    <div class="streak-display">
+                        <span class="streak-icon">🔥</span>
+                        <span id="streak-count" class="streak-count">0</span>
+                        <span class="streak-label">日連続</span>
+                    </div>
+                </div>
+                
+                <h2>バッジ</h2>
+                <div id="badges-container" class="badges-container">
+                    <!-- Badges will be dynamically inserted here -->
+                </div>
+                
+                <h2>統計</h2>
+                <div class="stats-tabs">
+                    <button id="tab-weekly" class="stats-tab active">週間</button>
+                    <button id="tab-monthly" class="stats-tab">月間</button>
+                </div>
+                <div id="stats-display" class="stats-display">
+                    <div class="stat-row">
+                        <span class="stat-label-lg">完了セッション</span>
+                        <span id="period-completed" class="stat-value-lg">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label-lg">集中時間</span>
+                        <span id="period-focus-time" class="stat-value-lg">0分</span>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
     
@@ -156,6 +199,7 @@
     <script src="{{ url_for('static', filename='js/api-client.js') }}"></script>
     <script src="{{ url_for('static', filename='js/settings-manager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ui-controller.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gamification-controller.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

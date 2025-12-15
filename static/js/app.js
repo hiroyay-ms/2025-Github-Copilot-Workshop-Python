@@ -20,10 +20,7 @@ const apiClient = new PomodoroAPIClient();
 
 // UI コントローラー
 const uiController = new UIController();
-window.uiController = uiController; // Make it globally accessible for settings manager
-
-// Settings manager
-const settingsManager = new SettingsManager(apiClient);
+window.uiController = uiController; // Make globally accessible
 
 /**
  * 秒をMM:SS形式にフォーマット
@@ -113,12 +110,17 @@ function initTimer() {
             if (currentSessionId) {
                 try {
                     updateButtonState(false, true); // ローディング状態
-                    await apiClient.completeSession(currentSessionId);
+                    const result = await apiClient.completeSession(currentSessionId);
                     console.log('セッション完了:', currentSessionId);
                     currentSessionId = null;
                     
                     // 統計を更新
                     await uiController.loadTodayStats(apiClient);
+                    
+                    // ゲーミフィケーション更新を処理
+                    if (result.gamification && window.gamificationController) {
+                        window.gamificationController.handleSessionCompletion(result.gamification);
+                    }
                     
                     // 成功メッセージ
                     uiController.showToast('セッションが完了しました', 'success');
@@ -218,18 +220,51 @@ async function handleResetClick() {
 }
 
 /**
+ * ゲーミフィケーション初期化
+ */
+async function initGamification() {
+    if (window.GamificationController) {
+        window.gamificationController = new window.GamificationController(apiClient);
+        await window.gamificationController.init().catch(error => {
+            console.error('ゲーミフィケーションの読み込みに失敗:', error);
+        });
+    }
+}
+
+/**
+ * イベントリスナー初期化
+ */
+function initEventListeners() {
+    startBtn.addEventListener('click', handleStartClick);
+    resetBtn.addEventListener('click', handleResetClick);
+}
+
+/**
+ * 統計初期化
+ */
+async function initStats() {
+    await uiController.loadTodayStats(apiClient).catch(error => {
+        console.error('統計の読み込みに失敗:', error);
+        uiController.showToast('統計の読み込みに失敗しました', 'warning');
+    });
+}
+
+/**
+ * 通知初期化
+ */
+async function initNotifications() {
+    const permission = await uiController.requestNotificationPermission();
+    if (permission === 'granted') {
+        console.log('通知が許可されました');
+    } else {
+        console.log('通知が拒否されました');
+    }
+}
+
+/**
  * アプリケーション初期化
  */
 async function initApp() {
-    // Load settings first
-    try {
-        const settings = await settingsManager.loadSettings();
-        currentDuration = settings.work_duration * 60; // Convert to seconds
-        console.log('Settings loaded:', settings);
-    } catch (error) {
-        console.error('Failed to load settings:', error);
-    }
-    
     // 初期表示を設定
     updateTimerDisplay(currentDuration);
     updateStatus('停止中', 'stopped');
@@ -238,8 +273,10 @@ async function initApp() {
     uiController.resetProgressBar();
     
     // イベントリスナーを設定
-    startBtn.addEventListener('click', handleStartClick);
-    resetBtn.addEventListener('click', handleResetClick);
+    initEventListeners();
+    
+    // ゲーミフィケーションを初期化
+    await initGamification();
     
     // Listen for settings changes
     window.addEventListener('settingsChanged', (event) => {
@@ -261,22 +298,10 @@ async function initApp() {
     });
     
     // 統計を初期ロード
-    uiController.loadTodayStats(apiClient).catch(error => {
-        console.error('統計の読み込みに失敗:', error);
-        uiController.showToast('統計の読み込みに失敗しました', 'warning');
-    });
+    await initStats();
     
     // 通知許可をリクエスト
-    uiController.requestNotificationPermission().then(permission => {
-        if (permission === 'granted') {
-            console.log('通知が許可されました');
-        } else if (permission === 'denied') {
-            console.log('通知が拒否されました');
-            uiController.showToast('通知がブロックされています', 'info', 5000);
-        } else {
-            console.log('通知の許可が未設定です');
-        }
-    });
+    await initNotifications();
     
     console.log('ポモドーロタイマーアプリケーションを起動しました');
 }

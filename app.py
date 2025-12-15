@@ -56,7 +56,9 @@ def register_routes(app: Flask) -> None:
     
     # API routes
     from app.routes import api_bp
+    from app.routes.gamification import gamification_bp
     app.register_blueprint(api_bp)
+    app.register_blueprint(gamification_bp)
 
 
 # アプリケーションインスタンス作成
