@@ -51,6 +51,20 @@ class SettingsManager {
         // Save settings
         this.saveBtn.addEventListener('click', () => this.saveSettings());
         
+        // Add class to radio labels when checked (for browser compatibility)
+        this.themeRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                // Remove checked class from all labels
+                document.querySelectorAll('.radio-group label').forEach(label => {
+                    label.classList.remove('checked');
+                });
+                // Add checked class to parent label
+                if (radio.checked) {
+                    radio.closest('label').classList.add('checked');
+                }
+            });
+        });
+        
         // ESC key to close
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.modal.classList.contains('show')) {
@@ -98,6 +112,12 @@ class SettingsManager {
         
         this.themeRadios.forEach(radio => {
             radio.checked = radio.value === settings.theme;
+            // Update checked class for browser compatibility
+            if (radio.checked) {
+                radio.closest('label').classList.add('checked');
+            } else {
+                radio.closest('label').classList.remove('checked');
+            }
         });
         
         this.soundStartCheckbox.checked = settings.sound_start;

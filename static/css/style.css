@@ -819,7 +819,14 @@ button:active::before {
     font-weight: 600;
 }
 
+/* Using :has() for modern browsers */
 .radio-group label:has(input[type="radio"]:checked) {
+    border-color: var(--primary-color);
+    background: rgba(91, 104, 232, 0.05);
+}
+
+/* Fallback using JavaScript-added class for older browsers */
+.radio-group label.checked {
     border-color: var(--primary-color);
     background: rgba(91, 104, 232, 0.05);
 }
