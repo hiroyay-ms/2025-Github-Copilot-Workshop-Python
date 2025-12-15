@@ -44,3 +44,5 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+# スクリプト（一時的なツール）
+create_github_issues.py
